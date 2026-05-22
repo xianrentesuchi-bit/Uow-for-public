@@ -1,18 +1,46 @@
 {
   "compilerOptions": {
     "target": "ES2020",
+
     "useDefineForClassFields": true,
+
     "module": "ESNext",
-    "moduleResolution": "Node",
+
+    "moduleResolution": "Bundler",
+
     "strict": true,
+
     "jsx": "preserve",
+
+    "sourceMap": true,
+
     "resolveJsonModule": true,
+
     "isolatedModules": true,
+
     "esModuleInterop": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    "allowSyntheticDefaultImports": true,
+
     "skipLibCheck": true,
-    "types": ["node"]
+
+    "noEmit": true,
+
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
+
+    "types": [
+      "node"
+    ]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "references": []
+
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ]
 }
