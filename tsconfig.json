@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+
+    "lib": [
+      "es2020",
+      "dom",
+      "dom.iterable"
+    ],
+
+    "useDefineForClassFields": true,
+
+    "strict": true,
+
+    "jsx": "preserve",
+
+    "resolveJsonModule": true,
+
+    "isolatedModules": true,
+
+    "esModuleInterop": true,
+
+    "allowSyntheticDefaultImports": true,
+
+    "skipLibCheck": true,
+
+    "noEmit": true,
+
+    "sourceMap": true,
+
+    "types": [
+      "node"
+    ]
+  },
+
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue"
+  ]
+}
