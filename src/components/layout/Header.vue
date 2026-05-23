@@ -31,10 +31,10 @@ function search() {
         <span class="material-symbols-outlined text-[24px]">menu</span>
       </button>
       
-      <!-- YouTube ロゴ（Base64の画像データを使用） -->
+      <!-- YouTube ロゴ（Base64の画像データを使用 - JPEG形式に対応） -->
       <a href="/" class="flex items-center cursor-pointer" style="height: 20px;">
         <img 
-          :src="'data:image/svg+xml;base64,' + youtubeLogoBase64.replace(/\s/g, '')" 
+          :src="'data:image/jpeg;base64,' + youtubeLogoBase64.replace(/\s/g, '')" 
           alt="YouTube Logo" 
           class="h-full object-contain"
         />
