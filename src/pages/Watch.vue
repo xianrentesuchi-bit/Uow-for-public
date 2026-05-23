@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 
 import Layout from '../components/layout/Layout.vue'
 import VideoPlayer from '../components/video/VideoPlayer.vue'
+import Loading from '../components/layout/Loading.vue'
 
 import { getComments, getVideo } from '../api/invidious'
 
@@ -11,21 +12,31 @@ const route = useRoute()
 
 const video = ref<any>(null)
 const comments = ref<any[]>([])
+const loading = ref(true)
 
 onMounted(async () => {
-  const id = route.params.id as string
+  try {
+    const id = route.params.id as string
 
-  video.value = await getVideo(id)
+    video.value = await getVideo(id)
 
-  const data = await getComments(id)
+    const data = await getComments(id)
 
-  comments.value = data.comments
+    comments.value = data.comments
+  } finally {
+    loading.value = false
+  }
 })
 </script>
 
 <template>
   <Layout>
-    <div class="p-6 max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-6">
+    <Loading v-if="loading" />
+
+    <div
+      v-else
+      class="p-6 max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-6"
+    >
 
       <div>
         <VideoPlayer :id="video?.videoId" />
