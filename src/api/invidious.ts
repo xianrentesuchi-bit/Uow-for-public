@@ -1,14 +1,43 @@
 // api/invidious.ts
 import axios, { AxiosError } from 'axios'
 
-const instances = [
+const defaultInstances = [
   'https://script.google.com/macros/s/AKfycbxi9iAARiDYyZPoTqy-1p3h-e7W1x7Ct1epdCtmga8UHLptrnz_77adiqbVCcLnKYLG/exec'
 ]
+
+function getInstances() {
+  const customEndpoint =
+    localStorage.getItem('custom_endpoint')
+
+  const endpointMode =
+    localStorage.getItem('endpoint_mode') || 'default'
+
+  if (
+    endpointMode === 'custom' &&
+    customEndpoint
+  ) {
+    return [customEndpoint]
+  }
+
+  if (
+    endpointMode === 'rotation' &&
+    customEndpoint
+  ) {
+    return [
+      ...defaultInstances,
+      customEndpoint
+    ]
+  }
+
+  return defaultInstances
+}
 
 async function request(path: string) {
   const cleanPath = path.startsWith('/')
     ? path
     : `/${path}`
+
+  const instances = getInstances()
 
   for (const instance of instances) {
     try {
