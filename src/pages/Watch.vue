@@ -26,11 +26,21 @@ const downloadModal = ref(false)
 
 const subscribed = ref(false)
 
+const expandedDescription = ref(false)
+
 const downloadFormats = computed(() => {
   return [
     ...(video.value?.formatStreams || []),
     ...(video.value?.adaptiveFormats || [])
   ]
+})
+
+const shortDescription = computed(() => {
+  if (!video.value?.description) return ''
+
+  return expandedDescription.value
+    ? video.value.description
+    : video.value.description.slice(0, 220)
 })
 
 function checkSubscribed() {
@@ -111,6 +121,8 @@ async function loadVideo() {
 
     video.value = await getVideo(id)
 
+    expandedDescription.value = false
+
     checkSubscribed()
 
     const commentsData = await getComments(id)
@@ -157,7 +169,7 @@ watch(
       class="bg-white text-black min-h-screen"
     >
       <div
-        class="p-6 max-w-[1700px] mx-auto grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-8"
+        class="p-6 max-w-[1700px] mx-auto grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-8"
       >
 
         <!-- LEFT -->
@@ -282,8 +294,37 @@ watch(
             </div>
 
             <div class="mt-3 whitespace-pre-wrap text-[15px] leading-7">
-              {{ video?.description }}
+              {{
+                shortDescription
+              }}
+
+              <span
+                v-if="
+                  video?.description &&
+                  video.description.length > 220
+                "
+              >
+                {{ expandedDescription ? '' : '...' }}
+              </span>
             </div>
+
+            <button
+              v-if="
+                video?.description &&
+                video.description.length > 220
+              "
+              class="mt-4 font-semibold hover:underline"
+              @click="
+                expandedDescription =
+                  !expandedDescription
+              "
+            >
+              {{
+                expandedDescription
+                  ? '一部表示'
+                  : 'もっとみる'
+              }}
+            </button>
           </div>
 
           <!-- COMMENTS -->
@@ -356,7 +397,7 @@ watch(
 
               <img
                 :src="related.thumbnail"
-                class="w-44 aspect-video object-cover rounded-xl"
+                class="w-44 aspect-video object-cover rounded-xl shrink-0"
               >
 
               <div class="flex-1 min-w-0">
