@@ -10,7 +10,7 @@ defineProps<{
     class="flex gap-4"
   >
     <img
-      :src="video.videoThumbnails?.[0]?.url"
+      :src="video.thumbnail"
       class="w-[360px] aspect-video object-cover rounded-2xl"
     />
 
@@ -20,13 +20,18 @@ defineProps<{
       </div>
 
       <div class="text-sm text-gray-500 mt-2">
-        {{ video.viewCount }} views
+        {{
+          Intl.NumberFormat().format(
+            video.viewCount || 0
+          )
+        }}
+        views
       </div>
 
       <div class="flex items-center gap-3 mt-4">
         <img
-          :src="video.authorThumbnails?.[0]?.url"
-          class="w-8 h-8 rounded-full"
+          :src="video.authorThumbnail"
+          class="w-8 h-8 rounded-full object-cover"
         />
 
         <div class="text-sm text-gray-700">
@@ -34,7 +39,7 @@ defineProps<{
         </div>
       </div>
 
-      <div class="mt-4 text-sm text-gray-500 line-clamp-3">
+      <div class="mt-4 text-sm text-gray-500 line-clamp-3 whitespace-pre-wrap">
         {{ video.description }}
       </div>
     </div>
