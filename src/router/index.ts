@@ -6,6 +6,7 @@ import Search from '../pages/Search.vue'
 import Shorts from '../pages/Shorts.vue'
 import Channel from '../pages/Channel.vue'
 import Subscribers from '../pages/Subscribers.vue'
+import History from '../pages/History.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -39,6 +40,11 @@ const router = createRouter({
     {
       path: '/subscribers',
       component: Subscribers,
+    },
+
+    {
+      path: '/history',
+      component: History,
     },
   ],
 })
