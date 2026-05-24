@@ -107,4 +107,8 @@ const sidebarClass = computed(() => ({
 .material-symbols-outlined {
   font-size: 24px;
 }
+
+.is-compact .material-symbols-outlined {
+  font-size: 1.5rem;
+}
 </style>
