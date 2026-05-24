@@ -1,14 +1,32 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 import Header from './Header.vue'
 import Sidebar from './Sidebar.vue'
+
+const isCompact = ref(true)
+
+function toggleSidebar() {
+  isCompact.value = !isCompact.value
+}
+
+const sidebarWidth = computed(() => {
+  return isCompact.value ? '70px' : '250px'
+})
 </script>
 
 <template>
   <div class="layout-container">
-    <Header />
-    <Sidebar />
+    <Header @toggle-sidebar="toggleSidebar" />
 
-    <main class="main-content">
+    <Sidebar
+      :is-open="true"
+      :is-compact="isCompact"
+    />
+
+    <main
+      class="main-content"
+      :style="{ marginLeft: sidebarWidth }"
+    >
       <slot />
     </main>
   </div>
@@ -16,8 +34,6 @@ import Sidebar from './Sidebar.vue'
 
 <style scoped>
 .layout-container {
-  --sidebar-width: 240px;
-  --gap-size: 20px;
   display: flex;
   min-height: 100vh;
 }
@@ -25,7 +41,6 @@ import Sidebar from './Sidebar.vue'
 .main-content {
   flex: 1;
   padding-top: 4rem;
-  padding-left: var(--gap-size);
-  width: calc(100% - var(--sidebar-width) - var(--gap-size));
+  transition: margin-left 0.3s ease;
 }
 </style>
