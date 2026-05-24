@@ -15,11 +15,11 @@ defineProps<{
     />
 
     <div class="flex-1">
-      <div class="text-xl font-semibold line-clamp-2">
+      <div class="text-xl font-semibold text-black line-clamp-2">
         {{ video.title }}
       </div>
 
-      <div class="text-sm text-zinc-400 mt-2">
+      <div class="text-sm text-gray-500 mt-2">
         {{ video.viewCount }} views
       </div>
 
@@ -29,12 +29,12 @@ defineProps<{
           class="w-8 h-8 rounded-full"
         />
 
-        <div class="text-sm text-zinc-300">
+        <div class="text-sm text-gray-700">
           {{ video.author }}
         </div>
       </div>
 
-      <div class="mt-4 text-sm text-zinc-400 line-clamp-3">
+      <div class="mt-4 text-sm text-gray-500 line-clamp-3">
         {{ video.description }}
       </div>
     </div>
