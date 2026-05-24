@@ -81,6 +81,7 @@ watch(
         <div>
 
           <VideoPlayer
+            :key="`${selectedStream}-${video?.videoId}`"
             :id="video?.videoId"
             :stream="selectedStream"
             :format-streams="video?.formatStreams"
