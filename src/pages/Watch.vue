@@ -262,7 +262,7 @@ watch(
                 @click="downloadModal = true"
               >
                 <span class="text-base leading-none">↓</span>
-                <span>オフライン</h2>
+                <span>オフライン</span>
               </button>
 
             </div>
