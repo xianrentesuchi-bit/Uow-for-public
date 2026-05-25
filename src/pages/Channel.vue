@@ -22,6 +22,8 @@ const channel = ref<any>(null)
 
 const videos = ref<any[]>([])
 
+const activeTab = ref('videos')
+
 onMounted(async () => {
   try {
     const id = route.params.id as string
@@ -80,20 +82,29 @@ onMounted(async () => {
     >
 
       <div class="relative h-[240px] bg-gray-200">
+
         <img
           :src="channel?.banner"
           class="w-full h-full object-cover"
         />
-      </div>
 
-      <div class="px-10">
-
-        <div class="flex gap-8 pt-8">
-
+        <!-- チャンネルアイコンをカバーより上に表示 -->
+        <div
+          class="absolute left-10 bottom-0 translate-y-1/2 z-20"
+        >
           <img
             :src="channel?.avatar"
-            class="w-40 h-40 rounded-full object-cover border-4 border-white -mt-20 shadow-md"
+            class="w-40 h-40 rounded-full object-cover border-4 border-white shadow-xl bg-white"
           />
+        </div>
+
+      </div>
+
+      <div class="px-10 pt-24">
+
+        <div class="flex gap-8">
+
+          <div class="w-40"></div>
 
           <div class="flex-1">
 
@@ -123,13 +134,88 @@ onMounted(async () => {
 
         </div>
 
-        <div class="mt-12 space-y-8 pb-20">
+        <!-- タブ -->
+        <div
+          class="flex items-center gap-10 border-b border-gray-200 mt-12"
+        >
+
+          <button
+            @click="activeTab = 'videos'"
+            class="h-14 text-sm font-semibold border-b-2 transition-colors"
+            :class="
+              activeTab === 'videos'
+                ? 'border-black text-black'
+                : 'border-transparent text-gray-500 hover:text-black'
+            "
+          >
+            Videos
+          </button>
+
+          <button
+            @click="activeTab = 'about'"
+            class="h-14 text-sm font-semibold border-b-2 transition-colors"
+            :class="
+              activeTab === 'about'
+                ? 'border-black text-black'
+                : 'border-transparent text-gray-500 hover:text-black'
+            "
+          >
+            About
+          </button>
+
+        </div>
+
+        <!-- 動画タブ -->
+        <div
+          v-if="activeTab === 'videos'"
+          class="mt-12 space-y-8 pb-20"
+        >
 
           <ChannelVideoCard
             v-for="video in videos"
             :key="video.videoId"
             :video="video"
           />
+
+        </div>
+
+        <!-- Aboutタブ -->
+        <div
+          v-if="activeTab === 'about'"
+          class="py-10"
+        >
+
+          <div class="max-w-3xl">
+
+            <div class="text-2xl font-bold text-black">
+              About
+            </div>
+
+            <div
+              class="mt-6 text-gray-700 whitespace-pre-wrap leading-8"
+            >
+              {{ channel?.description || 'No description.' }}
+            </div>
+
+            <div class="mt-10 space-y-4">
+
+              <div class="text-gray-600">
+                <span class="font-semibold text-black">
+                  Channel:
+                </span>
+                {{ channel?.author }}
+              </div>
+
+              <div class="text-gray-600">
+                <span class="font-semibold text-black">
+                  Subscribers:
+                </span>
+                {{ channel?.subCount }}
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
 
