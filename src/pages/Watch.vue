@@ -30,6 +30,8 @@ const expandedDescription = ref(false)
 
 const playlists = ref<any[]>([])
 
+const playlistModal = ref(false)
+
 const downloadFormats = computed(() => {
   return [
     ...(video.value?.formatStreams || []),
@@ -88,6 +90,8 @@ function addToPlaylist(playlistId: string) {
   loadPlaylists()
 
   alert('プレイリストに追加しました')
+
+  playlistModal.value = false
 }
 
 function checkSubscribed() {
@@ -240,31 +244,33 @@ watch(
 
     <div
       v-else
-      class="bg-white text-black min-h-screen"
+      class="bg-[#f9f9f9] text-black min-h-screen"
     >
       <div
-        class="p-6 max-w-[1700px] mx-auto grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-8"
+        class="px-6 py-5 max-w-[1800px] mx-auto grid grid-cols-1 2xl:grid-cols-[minmax(0,1fr)_420px] gap-8"
       >
 
         <!-- LEFT -->
-        <div>
+        <div class="min-w-0">
 
-          <VideoPlayer
-            :key="`${selectedStream}-${video?.videoId}`"
-            :id="video?.videoId"
-            :stream="selectedStream"
-            :format-streams="video?.formatStreams"
-          />
+          <div class="overflow-hidden rounded-2xl bg-black">
+            <VideoPlayer
+              :key="`${selectedStream}-${video?.videoId}`"
+              :id="video?.videoId"
+              :stream="selectedStream"
+              :format-streams="video?.formatStreams"
+            />
+          </div>
 
           <!-- STREAM SELECT -->
           <div class="mt-4 flex items-center gap-3">
-            <div class="font-semibold text-sm text-zinc-600">
+            <div class="font-semibold text-sm text-zinc-500">
               プレイヤー
             </div>
 
             <select
               v-model="selectedStream"
-              class="border border-zinc-300 rounded-xl px-4 h-10 bg-white"
+              class="border border-zinc-200 rounded-full px-4 h-10 bg-white text-sm outline-none hover:border-zinc-400 transition"
             >
               <option value="youtube-nocookie">
                 youtube-nocookie.com
@@ -281,7 +287,7 @@ watch(
           </div>
 
           <!-- TITLE -->
-          <h1 class="text-2xl font-bold mt-4 leading-tight">
+          <h1 class="text-[1.35rem] font-bold mt-4 leading-snug">
             {{ video?.title }}
           </h1>
 
@@ -300,11 +306,11 @@ watch(
               >
 
               <div>
-                <div class="font-semibold text-[15px]">
+                <div class="font-semibold text-[15px] leading-none">
                   {{ video?.author }}
                 </div>
 
-                <div class="text-sm text-zinc-500">
+                <div class="text-sm text-zinc-500 mt-1">
                   {{ video?.subCountText || 'YouTube Channel' }}
                 </div>
               </div>
@@ -315,7 +321,7 @@ watch(
             <div class="flex items-center gap-2 flex-wrap">
 
               <button
-                class="bg-zinc-100 hover:bg-zinc-200 transition px-5 h-10 rounded-full font-semibold flex items-center gap-2"
+                class="bg-zinc-100 hover:bg-zinc-200 transition px-5 h-10 rounded-full font-semibold flex items-center gap-2 text-sm"
               >
                 👍
                 <span>
@@ -328,7 +334,7 @@ watch(
               </button>
 
               <button
-                class="bg-zinc-100 hover:bg-zinc-200 transition px-5 h-10 rounded-full font-semibold"
+                class="bg-zinc-100 hover:bg-zinc-200 transition px-5 h-10 rounded-full font-semibold text-sm"
                 @click="shareVideo"
               >
                 共有
@@ -340,35 +346,21 @@ watch(
                     ? 'bg-zinc-200 text-black hover:bg-zinc-300'
                     : 'bg-black text-white hover:bg-zinc-800'
                 "
-                class="transition px-5 h-10 rounded-full font-semibold"
+                class="transition px-5 h-10 rounded-full font-semibold text-sm"
                 @click="toggleSubscribe"
               >
                 {{ subscribed ? '登録済み' : '登録' }}
               </button>
 
               <button
-                class="bg-zinc-100 hover:bg-zinc-200 transition px-5 h-10 rounded-full font-semibold"
+                class="bg-zinc-100 hover:bg-zinc-200 transition px-5 h-10 rounded-full font-semibold text-sm"
+                @click="playlistModal = true"
               >
-                <select
-                  class="bg-transparent outline-none"
-                  @change="addToPlaylist(($event.target as HTMLSelectElement).value)"
-                >
-                  <option value="">
-                    プレイリストに追加
-                  </option>
-
-                  <option
-                    v-for="playlist in playlists"
-                    :key="playlist.id"
-                    :value="playlist.id"
-                  >
-                    {{ playlist.name }}
-                  </option>
-                </select>
+                プレイリストに追加
               </button>
 
               <button
-                class="bg-black text-white hover:bg-zinc-800 transition px-5 h-10 rounded-full font-semibold"
+                class="bg-black text-white hover:bg-zinc-800 transition px-5 h-10 rounded-full font-semibold text-sm"
                 @click="downloadModal = true"
               >
                 ダウンロード
@@ -379,7 +371,7 @@ watch(
 
           <!-- STATS -->
           <div
-            class="bg-zinc-100 rounded-2xl p-4 mt-6"
+            class="bg-zinc-100 rounded-2xl p-5 mt-6 border border-zinc-200"
           >
             <div class="font-semibold text-sm">
               {{
@@ -388,7 +380,7 @@ watch(
               回視聴
             </div>
 
-            <div class="mt-3 whitespace-pre-wrap text-[15px] leading-7">
+            <div class="mt-3 whitespace-pre-wrap text-[15px] leading-7 text-zinc-800">
               {{
                 shortDescription
               }}
@@ -408,7 +400,7 @@ watch(
                 video?.description &&
                 video.description.length > 220
               "
-              class="mt-4 font-semibold hover:underline"
+              class="mt-4 font-semibold hover:underline text-sm"
               @click="
                 expandedDescription =
                   !expandedDescription
@@ -423,9 +415,9 @@ watch(
           </div>
 
           <!-- COMMENTS -->
-          <div class="mt-8">
+          <div class="mt-10">
 
-            <h2 class="text-xl font-bold mb-6">
+            <h2 class="text-xl font-bold mb-7">
               コメント
               ({{ comments.length }})
             </h2>
@@ -438,12 +430,12 @@ watch(
 
               <img
                 :src="comment.authorThumbnail"
-                class="w-10 h-10 rounded-full object-cover"
+                class="w-10 h-10 rounded-full object-cover shrink-0"
               >
 
               <div class="flex-1">
 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
                   <div class="font-semibold text-sm">
                     {{ comment.author }}
                   </div>
@@ -457,7 +449,7 @@ watch(
                   {{ comment.content }}
                 </div>
 
-                <div class="mt-3 text-sm text-zinc-500 flex items-center gap-4">
+                <div class="mt-3 text-sm text-zinc-500 flex items-center gap-5">
 
                   <div class="flex items-center gap-1">
                     👍
@@ -468,7 +460,7 @@ watch(
                     }}
                   </div>
 
-                  <button class="hover:text-black">
+                  <button class="hover:text-black transition">
                     返信
                   </button>
 
@@ -479,9 +471,9 @@ watch(
         </div>
 
         <!-- RIGHT -->
-        <div>
+        <div class="min-w-0">
 
-          <div class="space-y-4">
+          <div class="space-y-3">
 
             <RouterLink
               v-for="related in relatedVideos"
@@ -492,13 +484,13 @@ watch(
 
               <img
                 :src="related.thumbnail"
-                class="w-44 aspect-video object-cover rounded-xl shrink-0"
+                class="w-[180px] aspect-video object-cover rounded-xl shrink-0"
               >
 
-              <div class="flex-1 min-w-0">
+              <div class="flex-1 min-w-0 pt-1">
 
                 <div
-                  class="font-semibold text-[15px] leading-5 line-clamp-2 group-hover:text-zinc-700"
+                  class="font-semibold text-[14px] leading-5 line-clamp-2 group-hover:text-zinc-700 transition"
                 >
                   {{ related.title }}
                 </div>
@@ -528,6 +520,68 @@ watch(
 
         </div>
 
+      </div>
+
+      <!-- PLAYLIST MODAL -->
+      <div
+        v-if="playlistModal"
+        class="fixed inset-0 z-[999] bg-black/50 flex items-center justify-center px-5"
+        @click.self="playlistModal = false"
+      >
+        <div
+          class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden"
+        >
+
+          <div class="px-6 py-5 border-b border-zinc-200 flex items-center justify-between">
+            <div class="text-lg font-bold">
+              プレイリストに追加
+            </div>
+
+            <button
+              class="w-9 h-9 rounded-full hover:bg-zinc-100 transition text-lg"
+              @click="playlistModal = false"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div class="max-h-[420px] overflow-y-auto p-3">
+
+            <button
+              v-for="playlist in playlists"
+              :key="playlist.id"
+              class="w-full flex items-center gap-4 hover:bg-zinc-100 rounded-2xl px-4 py-3 transition text-left"
+              @click="addToPlaylist(playlist.id)"
+            >
+
+              <div
+                class="w-14 h-14 rounded-xl bg-zinc-200 flex items-center justify-center text-xl shrink-0"
+              >
+                ▶
+              </div>
+
+              <div class="min-w-0">
+                <div class="font-semibold truncate">
+                  {{ playlist.name }}
+                </div>
+
+                <div class="text-sm text-zinc-500 mt-1">
+                  {{ playlist.videos?.length || 0 }} 本の動画
+                </div>
+              </div>
+
+            </button>
+
+            <div
+              v-if="!playlists.length"
+              class="text-center text-zinc-500 py-16"
+            >
+              プレイリストがありません
+            </div>
+
+          </div>
+
+        </div>
       </div>
 
       <Download
