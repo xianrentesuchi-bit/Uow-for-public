@@ -10,7 +10,10 @@ defineProps<{
     class="flex gap-4"
   >
     <img
-      :src="video.thumbnail"
+      :src="
+        video.thumbnail ||
+        `https://i.ytimg.com/vi/${video.videoId}/hqdefault.jpg`
+      "
       class="w-[360px] aspect-video object-cover rounded-2xl"
     />
 
@@ -30,7 +33,10 @@ defineProps<{
 
       <div class="flex items-center gap-3 mt-4">
         <img
-          :src="video.authorThumbnail"
+          :src="
+            video.authorThumbnail ||
+            `https://yt3.ggpht.com/ytc/default-user=s800-c-k-c0x00ffffff-no-rj`
+          "
           class="w-8 h-8 rounded-full object-cover"
         />
 
