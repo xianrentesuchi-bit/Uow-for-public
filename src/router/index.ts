@@ -10,6 +10,8 @@ import History from '../pages/History.vue'
 import Playlist from '../pages/Playlist.vue'
 import Html from '../pages/Html.vue'
 import Read from '../pages/Read.vue'
+import MyPage from '../pages/mypage.vue'
+import Help from '../pages/help.vue'
 import NotFound from '../pages/404.vue'
 
 const router = createRouter({
@@ -64,6 +66,16 @@ const router = createRouter({
     {
       path: '/read',
       component: Read,
+    },
+
+    {
+      path: '/mypage',
+      component: MyPage,
+    },
+
+    {
+      path: '/help',
+      component: Help,
     },
 
     {
