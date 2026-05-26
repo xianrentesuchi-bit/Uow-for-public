@@ -73,10 +73,10 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { searchBooksApi, watchBookApi, SearchResult, BookDetail } from './api/bookvue';
+import { searchBooksApi, watchBookApi, SearchResult, BookDetail } from '../api/bookvue';
 
 export default defineComponent({
-  name: 'App',
+  name: 'Read',
   setup() {
     const view = ref<'list' | 'detail'>('list');
     const searchQuery = ref('');
@@ -157,7 +157,6 @@ export default defineComponent({
     --border-color: #dee2e6;
 }
 
-/* スコープ外のbodyやフォント設定を適用させるため、最初だけグローバルまたは親のスタイルを参照できるように考慮 */
 #app {
     max-width: 1200px;
     margin: 0 auto;
