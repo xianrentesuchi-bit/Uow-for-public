@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { loginUser, registerUser } from '@/api/account';
+import { loginUser, registerUser } from '../../api/account';
 
 // --- 状態管理用変数 ---
 const isLoggedIn = ref<boolean>(false);
