@@ -1,4 +1,4 @@
-const apiBase = 'https://uow-secret-api-x1e9.vercel.app';
+const apiBase = 'https://script.google.com/macros/s/AKfycbxvdx3EXJM2ClQJhqWEbxxKw9eBTCQl9N4s2Li5cp0m7row00F3NRT7xMiqFdBFJCDAkw/exec';
 
 export interface SearchResult {
     id: string;
@@ -15,7 +15,7 @@ export interface BookDetail {
  * 1. 検索APIの呼び出し
  */
 export async function searchBooksApi(query: string): Promise<SearchResult[]> {
-    const response = await fetch(`${apiBase}/api/search?q=${encodeURIComponent(query)}`);
+    const response = await fetch(`${apiBase}?path=search&q=${encodeURIComponent(query)}`);
     if (!response.ok) throw new Error('Search failed');
     const data = await response.json();
     return data.result || [];
@@ -25,7 +25,7 @@ export async function searchBooksApi(query: string): Promise<SearchResult[]> {
  * 2. 詳細内容APIの呼び出し
  */
 export async function watchBookApi(id: string): Promise<BookDetail> {
-    const response = await fetch(`${apiBase}/api/watch?id=${encodeURIComponent(id)}`);
+    const response = await fetch(`${apiBase}?path=watch&id=${encodeURIComponent(id)}`);
     if (!response.ok) throw new Error('Detail fetch failed');
     const data = await response.json();
     return {
