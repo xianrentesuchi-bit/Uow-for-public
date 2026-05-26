@@ -1,4 +1,4 @@
-const apiBase = 'https://script.google.com/macros/s/AKfycbxJz83_HjHC0KTK6_HwTYwTN3-n3QK75G1U7D9bIKRisF5Y9mK1CfJ8bxSD3N_kLGUeag/exec';
+const apiBase = 'https://script.google.com/macros/s/AKfycbyuIeEN2s5HB2_cduvLfP0rwqluAt3UYZEcpgiagEmfhWFfP7XXHlzXRrIGf8zEa3IXwQ/exec';
 
 export interface SearchResult {
     id: string;
