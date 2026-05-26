@@ -105,7 +105,7 @@ export async function getChannel(channelId: string) {
 }
 
 export async function getChannelVideos(channelId: string) {
-  return request(`/api/v1/channels/videos/${channelId}`)
+  return request(`/api/v1/channels/${channelId}/videos`)
 }
 
 export async function getPlaylist(playlistId: string) {
