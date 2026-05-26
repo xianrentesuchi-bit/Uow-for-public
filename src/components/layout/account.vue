@@ -120,7 +120,7 @@ const goToHelp = () => {
 </script>
 
 <template>
-  <div class="absolute top-14 right-4 w-64 bg-white border border-zinc-200 shadow-lg rounded-xl overflow-hidden z-50">
+  <div @click.stop class="absolute top-14 right-4 w-64 bg-white border border-zinc-200 shadow-lg rounded-xl overflow-hidden z-50">
     <div class="p-4 border-b border-zinc-100">
       <template v-if="!isLoggedIn">
         <template v-if="authMode === 'none'">
