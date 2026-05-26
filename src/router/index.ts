@@ -8,7 +8,7 @@ import Channel from '../pages/Channel.vue'
 import Subscribers from '../pages/Subscribers.vue'
 import History from '../pages/History.vue'
 import Playlist from '../pages/Playlist.vue'
-import html from '../pages/html.vue'
+import Html from '../pages/Html.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -48,13 +48,15 @@ const router = createRouter({
       path: '/history',
       component: History,
     },
+
     {
       path: '/playlist',
       component: Playlist,
     },
+
     {
       path: '/tools',
-      component: html,
+      component: Html,
     },
   ],
 })
