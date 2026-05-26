@@ -9,6 +9,7 @@ import Subscribers from '../pages/Subscribers.vue'
 import History from '../pages/History.vue'
 import Playlist from '../pages/Playlist.vue'
 import Html from '../pages/Html.vue'
+import Read from '../pages/Read.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -57,6 +58,11 @@ const router = createRouter({
     {
       path: '/tools',
       component: Html,
+    },
+
+    {
+      path: '/read/:id',
+      component: Read,
     },
   ],
 })
