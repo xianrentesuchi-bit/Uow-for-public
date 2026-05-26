@@ -17,10 +17,16 @@
         >
           2048
         </button>
+        <button 
+          :class="['menu-btn', { active: currentTarget === 'sennintube' }]" 
+          @click="currentTarget = 'sennintube'"
+        >
+          仙人tube（初代）
+        </button>
       </div>
       
       <iframe 
-        :src="currentTarget === 'coderunner' ? '/htmls/code.html' : '/htmls/2049.html'" 
+        :src="iframeSrc" 
         class="embedded-html"
       ></iframe>
     </div>
@@ -42,6 +48,20 @@ export default {
     return {
       // 初期状態はcoderunnerを選択
       currentTarget: 'coderunner'
+    }
+  },
+
+  computed: {
+    // 選択されたターゲットに応じてsrcを切り替え
+    iframeSrc() {
+      if (this.currentTarget === 'coderunner') {
+        return '/htmls/code.html';
+      } else if (this.currentTarget === '2048') {
+        return '/htmls/2049.html';
+      } else if (this.currentTarget === 'sennintube') {
+        return '/htmls/sennintube.html';
+      }
+      return '/htmls/code.html';
     }
   }
 }
