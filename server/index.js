@@ -2,6 +2,8 @@ import express from 'express'
 import axios from 'axios'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import http from 'http'
+import https from 'https'
 
 const app = express()
 
@@ -23,6 +25,12 @@ const defaultInstances = [
   'https://iv.duti.dev'
 ]
 
+const axiosInstance = axios.create({
+  timeout: 10000,
+  httpAgent: new http.Agent({ keepAlive: true }),
+  httpsAgent: new https.Agent({ keepAlive: true })
+})
+
 app.use(express.json())
 
 app.use(
@@ -31,14 +39,10 @@ app.use(
   )
 )
 
-async function request(instance, pathName) {
+function request(instance, pathName) {
   const url = `${instance}${pathName}`
 
-  const res = await axios.get(url, {
-    timeout: 10000
-  })
-
-  return res.data
+  return axiosInstance.get(url).then(res => res.data)
 }
 
 app.get('/api/proxy', async (req, res) => {
@@ -76,24 +80,23 @@ app.get('/api/proxy', async (req, res) => {
       ]
     }
 
-    for (const instance of instances) {
-      try {
-        const data = await request(
-          instance,
-          apiPath
-        )
-
-        return res.json(data)
-      } catch (e) {
-        console.log(
-          `failed: ${instance}${apiPath}`
-        )
-      }
+    try {
+      const fastestData = await Promise.any(
+        instances.map(async (instance) => {
+          try {
+            return await request(instance, apiPath)
+          } catch (e) {
+            console.log(`failed: ${instance}${apiPath}`)
+            throw e
+          }
+        })
+      )
+      return res.json(fastestData)
+    } catch (e) {
+      return res.status(500).json({
+        error: 'All instances failed'
+      })
     }
-
-    res.status(500).json({
-      error: 'All instances failed'
-    })
   } catch (e) {
     res.status(500).json({
       error: 'Internal server error'
