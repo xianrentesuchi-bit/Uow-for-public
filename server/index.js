@@ -80,43 +80,24 @@ app.get('/api/proxy', async (req, res) => {
       ]
     }
 
-    try {
-      const fastestData = await Promise.any(
-        instances.map(async (instance) => {
-          try {
-            const data = await request(instance, apiPath)
-            
-            if (!data) throw new Error('Empty data')
+    for (const instance of instances) {
+      try {
+        const data = await request(
+          instance,
+          apiPath
+        )
 
-            if (apiPath.includes('/videos')) {
-              if (Array.isArray(data) && data.length > 0) {
-                return data
-              }
-              if (data && Array.isArray(data.videos) && data.videos.length > 0) {
-                return data.videos
-              }
-              if (data && Array.isArray(data.relatedVideos) && data.relatedVideos.length > 0) {
-                return data.relatedVideos
-              }
-              throw new Error('No videos found in this instance response')
-            }
-
-            return data
-          } catch (e) {
-            console.log(`failed: ${instance}${apiPath}`)
-            throw e
-          }
-        })
-      )
-      return res.json(fastestData)
-    } catch (e) {
-      if (apiPath.includes('/videos')) {
-        return res.json([])
+        return res.json(data)
+      } catch (e) {
+        console.log(
+          `failed: ${instance}${apiPath}`
+        )
       }
-      return res.status(500).json({
-        error: 'All instances failed'
-      })
     }
+
+    res.status(500).json({
+      error: 'All instances failed'
+    })
   } catch (e) {
     res.status(500).json({
       error: 'Internal server error'
