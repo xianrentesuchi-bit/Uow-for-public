@@ -1,35 +1,17 @@
-// api/invidious.ts
 import axios, { AxiosError } from 'axios'
 
-const defaultInstances = [
-  'https://script.google.com/macros/s/AKfycbxi9iAARiDYyZPoTqy-1p3h-e7W1x7Ct1epdCtmga8UHLptrnz_77adiqbVCcLnKYLG/exec'
-]
+function getEndpointMode() {
+  return (
+    localStorage.getItem('endpoint_mode') ||
+    'default'
+  )
+}
 
-function getInstances() {
-  const customEndpoint =
-    localStorage.getItem('custom_endpoint')
-
-  const endpointMode =
-    localStorage.getItem('endpoint_mode') || 'default'
-
-  if (
-    endpointMode === 'custom' &&
-    customEndpoint
-  ) {
-    return [customEndpoint]
-  }
-
-  if (
-    endpointMode === 'rotation' &&
-    customEndpoint
-  ) {
-    return [
-      ...defaultInstances,
-      customEndpoint
-    ]
-  }
-
-  return defaultInstances
+function getCustomEndpoint() {
+  return (
+    localStorage.getItem('custom_endpoint') ||
+    ''
+  )
 }
 
 async function request(path: string) {
@@ -37,45 +19,30 @@ async function request(path: string) {
     ? path
     : `/${path}`
 
-  const instances = getInstances()
+  try {
+    const res = await axios.get(
+      '/api/proxy',
+      {
+        params: {
+          path: cleanPath,
+          endpointMode: getEndpointMode(),
+          customEndpoint: getCustomEndpoint()
+        },
 
-  for (const instance of instances) {
-    try {
-      const targetUrl = new URL(instance)
-      const isSubQuery = cleanPath.includes('?')
-
-      if (isSubQuery) {
-        const [apiPath, searchParams] = cleanPath.split('?')
-
-        targetUrl.searchParams.set('path', apiPath)
-
-        const params = new URLSearchParams(searchParams)
-
-        params.forEach((value, key) => {
-          targetUrl.searchParams.set(key, value)
-        })
-      } else {
-        targetUrl.searchParams.set('path', cleanPath)
+        timeout: 10000
       }
+    )
 
-      const res = await axios.get(
-        targetUrl.toString(),
-        {
-          timeout: 5000
-        }
-      )
+    return res.data
+  } catch (e) {
+    const error = e as AxiosError
 
-      return res.data
-    } catch (e) {
-      const error = e as AxiosError
+    console.warn(
+      `Proxy failed: ${cleanPath} | Reason: ${error.message}`
+    )
 
-      console.warn(
-        `Instance failed: ${instance}${cleanPath} | Reason: ${error.message}`
-      )
-    }
+    throw error
   }
-
-  throw new Error('All instances failed to respond.')
 }
 
 export async function searchVideos(query: string) {
