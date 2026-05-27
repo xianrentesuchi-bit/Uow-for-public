@@ -84,7 +84,24 @@ app.get('/api/proxy', async (req, res) => {
       const fastestData = await Promise.any(
         instances.map(async (instance) => {
           try {
-            return await request(instance, apiPath)
+            const data = await request(instance, apiPath)
+            
+            if (!data) throw new Error('Empty data')
+
+            if (apiPath.includes('/videos')) {
+              if (Array.isArray(data) && data.length > 0) {
+                return data
+              }
+              if (data && Array.isArray(data.videos) && data.videos.length > 0) {
+                return data.videos
+              }
+              if (data && Array.isArray(data.relatedVideos) && data.relatedVideos.length > 0) {
+                return data.relatedVideos
+              }
+              throw new Error('No videos found in this instance response')
+            }
+
+            return data
           } catch (e) {
             console.log(`failed: ${instance}${apiPath}`)
             throw e
@@ -93,6 +110,9 @@ app.get('/api/proxy', async (req, res) => {
       )
       return res.json(fastestData)
     } catch (e) {
+      if (apiPath.includes('/videos')) {
+        return res.json([])
+      }
       return res.status(500).json({
         error: 'All instances failed'
       })
