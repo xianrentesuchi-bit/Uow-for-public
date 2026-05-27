@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const GAS_API_URL = 'https://script.google.com/macros/s/AKfycby9dBd9LcmLMjMQN-jqSJsZLEkpLtLZMAZk9xuAotD2WoScH98b6W4fpWF9EZXVElDu/exec';
+const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwYsl3issVM1SgFyeuRVCITmIfex6kc7lmuiRXVpxbD195ctM0aAsyUxBV_NZxVz9UH/exec';
 
 export interface ApiResponse {
   success: boolean;

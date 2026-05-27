@@ -102,7 +102,6 @@ onMounted(async () => {
           class="w-full h-full object-cover"
         />
 
-        <!-- チャンネルアイコンをカバーより上に表示 -->
         <div
           class="absolute left-10 bottom-0 translate-y-1/2 z-20"
         >
@@ -169,7 +168,6 @@ onMounted(async () => {
 
         </div>
 
-        <!-- タブ -->
         <div
           class="flex items-center gap-10 border-b border-gray-200 mt-12"
         >
@@ -200,7 +198,6 @@ onMounted(async () => {
 
         </div>
 
-        <!-- 動画タブ -->
         <div
           v-if="activeTab === 'videos'"
           class="mt-12 space-y-8 pb-20"
@@ -214,7 +211,6 @@ onMounted(async () => {
 
         </div>
 
-        <!-- Aboutタブ -->
         <div
           v-if="activeTab === 'about'"
           class="py-10"
