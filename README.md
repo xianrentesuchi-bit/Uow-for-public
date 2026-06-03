@@ -8,3 +8,4 @@
   ```bash
   npm start
 
+# 最近のメインの活動場所はclassroomだからきてね
