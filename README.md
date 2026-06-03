@@ -1,5 +1,10 @@
-# デプロイ方法
-- buildcommand
+## デプロイ方法
+
+- **buildcommand**
+  ```bash
   npm install
-- startcommand
+
+- **startcommand**
+  ```bash
   npm start
+
