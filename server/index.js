@@ -23,106 +23,22 @@ const defaultInstances = [
   'https://iv.duti.dev'
 ]
 
-const axiosInstance = axios.create({
-  timeout: 6000,
-  headers: {
-    'User-Agent':
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-  }
-})
-
-const cache = new Map()
-
-const CACHE_TTL = 1000 * 30
-
 app.use(express.json())
 
 app.use(
   express.static(
-    path.join(__dirname, '../dist'),
-    {
-      maxAge: '1h',
-      etag: true
-    }
+    path.join(__dirname, '../dist')
   )
 )
-
-function isValidResponse(data) {
-  if (!data) {
-    return false
-  }
-
-  if (
-    typeof data === 'string' &&
-    (
-      data.includes('<html') ||
-      data.includes('<!DOCTYPE')
-    )
-  ) {
-    return false
-  }
-
-  if (
-    typeof data === 'object' &&
-    data.error
-  ) {
-    return false
-  }
-
-  return true
-}
 
 async function request(instance, pathName) {
   const url = `${instance}${pathName}`
 
-  const res = await axiosInstance.get(url)
-
-  if (!isValidResponse(res.data)) {
-    throw new Error('Invalid response')
-  }
+  const res = await axios.get(url, {
+    timeout: 10000
+  })
 
   return res.data
-}
-
-async function fetchFromInstances(
-  instances,
-  apiPath
-) {
-  return new Promise((resolve, reject) => {
-    let finished = false
-
-    let failedCount = 0
-
-    for (const instance of instances) {
-      request(instance, apiPath)
-        .then((data) => {
-          if (finished) {
-            return
-          }
-
-          finished = true
-
-          resolve(data)
-        })
-        .catch(() => {
-          failedCount++
-
-          console.log(
-            `failed: ${instance}${apiPath}`
-          )
-
-          if (
-            failedCount === instances.length
-          ) {
-            reject(
-              new Error(
-                'All instances failed'
-              )
-            )
-          }
-        })
-    }
-  })
 }
 
 app.get('/api/proxy', async (req, res) => {
@@ -133,17 +49,6 @@ app.get('/api/proxy', async (req, res) => {
       return res.status(400).json({
         error: 'Missing path'
       })
-    }
-
-    const cacheKey = JSON.stringify(req.query)
-
-    const cached = cache.get(cacheKey)
-
-    if (
-      cached &&
-      Date.now() - cached.time < CACHE_TTL
-    ) {
-      return res.json(cached.data)
     }
 
     const customEndpoint =
@@ -171,31 +76,32 @@ app.get('/api/proxy', async (req, res) => {
       ]
     }
 
-    const data =
-      await fetchFromInstances(
-        instances,
-        apiPath
-      )
+    for (const instance of instances) {
+      try {
+        const data = await request(
+          instance,
+          apiPath
+        )
 
-    if (!isValidResponse(data)) {
-      return res.status(500).json({
-        error: 'Invalid API response'
-      })
+        // --- Invidiousから送られてきた情報の正しいかどうかのチェック ---
+        // データの存在確認、およびInvidious APIが返すエラー構造（{ error: "..." } など）になっていないかを検証します
+        if (!data || (typeof data === 'object' && data.error)) {
+          throw new Error('Invalid or error response from Invidious instance')
+        }
+
+        return res.json(data)
+      } catch (e) {
+        console.log(
+          `failed: ${instance}${apiPath}`
+        )
+      }
     }
 
-    cache.set(cacheKey, {
-      data,
-      time: Date.now()
+    res.status(500).json({
+      error: 'All instances failed'
     })
-
-    res.setHeader(
-      'Cache-Control',
-      'public, max-age=30'
-    )
-
-    return res.json(data)
   } catch (e) {
-    return res.status(500).json({
+    res.status(500).json({
       error: 'Internal server error'
     })
   }
